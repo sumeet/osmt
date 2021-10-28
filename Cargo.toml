@@ -10,3 +10,4 @@ edition = "2021"
 [dependencies]
 iced-x86 = {version = "*", features = ["code_asm"]}
 anyhow = "*"
+eframe = "*"

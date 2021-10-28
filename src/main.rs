@@ -3,6 +3,8 @@ use std::io::Write;
 use std::iter::repeat;
 use iced_x86::code_asm::CodeAssembler;
 
+mod bios_sim;
+
 fn fill(v: &mut Vec<u8>, n: usize, with: u8) {
     if v.len() < n {
         v.extend(repeat(with).take(n - v.len()));
@@ -18,13 +20,24 @@ fn gen_mbr(mut a: CodeAssembler) -> anyhow::Result<Vec<u8>> {
     Ok(bs)
 }
 
+fn bios_print_char(a: &mut CodeAssembler, c: char) -> anyhow::Result<()> {
+    use iced_x86::code_asm::*;
+    a.mov(ah, 0x0E)?;
+    a.mov(al, c as i32)?;
+    a.int(0x10)?;
+    Ok(())
+}
+
 fn mbr_instructions() -> anyhow::Result<CodeAssembler> {
     use iced_x86::code_asm::*;
 
-    let mut a = CodeAssembler::new(64)?;
-    let mut beginning = a.create_label();
-    a.set_label(&mut beginning)?;
-    a.jmp(beginning)?;
+    let mut a = CodeAssembler::new(16)?;
+    bios_print_char(&mut a, 'S')?;
+    bios_print_char(&mut a, 'U')?;
+    bios_print_char(&mut a, 'P')?;
+    let mut inf_loop = a.create_label();
+    a.set_label(&mut inf_loop)?;
+    a.jmp(inf_loop)?;
     Ok(a)
 }
 
