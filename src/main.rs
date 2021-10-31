@@ -1,7 +1,9 @@
+#![feature(maybe_uninit_array_assume_init)]
+
+use iced_x86::code_asm::CodeAssembler;
 use std::fs::File;
 use std::io::Write;
 use std::iter::repeat;
-use iced_x86::code_asm::CodeAssembler;
 
 mod bios_sim;
 
@@ -14,7 +16,6 @@ fn fill(v: &mut Vec<u8>, n: usize, with: u8) {
 fn gen_mbr(mut a: CodeAssembler) -> anyhow::Result<Vec<u8>> {
     let mut bs = a.assemble(0)?;
     fill(&mut bs, 512, 0);
-    // holy shit, copilot filled in these two lines
     bs[510] = 0x55;
     bs[511] = 0xAA;
     Ok(bs)

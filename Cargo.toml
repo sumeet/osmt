@@ -11,3 +11,5 @@ edition = "2021"
 iced-x86 = {version = "*", features = ["code_asm"]}
 anyhow = "*"
 eframe = "*"
+itertools = "*"
+arrayvec = "*"
